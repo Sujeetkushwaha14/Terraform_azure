@@ -1,43 +1,28 @@
-name: 'Terraform Apply'
+name: Terraform Apply
 
 on:
   push:
     branches:
-      - main  # Trigger on push to the 'main' branch
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
 
-      # Step 2: Set up Azure CLI
-      - name: Set up Azure CLI
-        uses: azure/setup-azure-cli@v1
-        with:
-          version: '2.39.0'  # Ensure you're using a stable version of Azure CLI
+    - name: Set up Azure CLI
+      uses: azure/CLI@v2 # Update to the latest stable version
+      with:
+        version: latest
 
-      # Step 3: Log in to Azure using Service Principal
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    - name: Terraform Init
+      run: terraform init
 
-      # Step 4: Initialize Terraform
-      - name: Terraform Init
-        run: terraform init
-
-      # Step 5: Terraform Plan
-      - name: Terraform Plan
-        run: terraform plan
-
-      # Step 6: Terraform Apply (Only on push to main branch)
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-        if: github.ref == 'refs/heads/main'  # Only apply on push to main
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
