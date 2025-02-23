@@ -19,16 +19,16 @@ jobs:
 
       # Set up Terraform using HashiCorp setup-terraform action
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v4
 
       # Azure Login using the Azure login action
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v4
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}  # Secrets se client-id fetch
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}  # Secrets se client-secret fetch
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}  # Secrets se tenant-id fetch
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Secrets se subscription-id fetch
+          client-id: ${{ 5b8e2650-4f64-46de-8893-5bada5bea331 }}  # Secrets se client-id fetch
+          client-secret: ${{ 5328b860-fedd-4738-94a0-bbee6c7d22a4 }}  # Secrets se client-secret fetch
+          tenant-id: ${{ 080235e6-140b-47bd-b805-34a2b40eb303 }}  # Secrets se tenant-id fetch
+          subscription-id: ${{ 2179abbd-615b-45a1-bc02-48c9a711e004 }}  # Secrets se subscription-id fetch
 
       # Initialize Terraform
       - name: Terraform Init
