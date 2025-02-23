@@ -12,6 +12,10 @@ jobs:
   terraform:
     runs-on: ubuntu-latest  # Ye ek Ubuntu runner pe run karega
 
+    permissions:
+      id-token: write  # Add this line to enable id-token permissions
+      contents: read   # Required for checkout action
+
     steps:
       # Checkout code from GitHub repository
       - name: Checkout code
