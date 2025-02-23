@@ -75,7 +75,6 @@ resource "azurerm_linux_virtual_machine" "example" {
     sku       = "22_04-lts"
     version   = "latest"
   }
-
 }
 output "azurerm" {
   value = azurerm_public_ip.example
