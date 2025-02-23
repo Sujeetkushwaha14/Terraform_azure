@@ -4,25 +4,18 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  terraform:
+  apply:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Set up Azure CLI
-      uses: azure/CLI@v2 # Update to the latest stable version
+    - name: Run Azure CLI script
+      uses: azure/CLI@v2
       with:
-        version: latest
-
-    - name: Terraform Init
-      run: terraform init
-
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
+        inlineScript: |
+          az group create --name myResourceGroup --location eastus
+        azcliversion: latest
