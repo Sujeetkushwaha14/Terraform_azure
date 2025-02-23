@@ -18,7 +18,7 @@ resource "azurerm_network_interface" "example" {
   name                = "example-nic"
   location            = azurerm_resource_group.sujeet.location
   resource_group_name = azurerm_resource_group.sujeet.name
- 
+
   ip_configuration {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.example.id
@@ -29,7 +29,7 @@ resource "azurerm_network_security_group" "example" {
   name                = "acceptanceTestSecurityGroup1"
   location            = azurerm_resource_group.sujeet.location
   resource_group_name = azurerm_resource_group.sujeet.name
- 
+
   security_rule {
     name                       = "test123"
     priority                   = 100
@@ -37,7 +37,7 @@ resource "azurerm_network_security_group" "example" {
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_ranges     = ["22","80","443","8000"]
+    destination_port_ranges    = ["22", "80", "443", "8000"]
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
@@ -53,17 +53,17 @@ resource "azurerm_network_interface_security_group_association" "example" {
   network_security_group_id = azurerm_network_security_group.example.id
 }
 resource "azurerm_linux_virtual_machine" "example" {
-  name                = "sujeet-machine"
-  resource_group_name = azurerm_resource_group.sujeet.name
-  location            = azurerm_resource_group.sujeet.location
-  size                = "Standard_F2"
-  admin_username      = "adminuser"
-  admin_password      = "sKushwaha@123"
+  name                            = "sujeet-machine"
+  resource_group_name             = azurerm_resource_group.sujeet.name
+  location                        = azurerm_resource_group.sujeet.location
+  size                            = "Standard_F2"
+  admin_username                  = "adminuser"
+  admin_password                  = "sKushwaha@123"
   disable_password_authentication = false
   network_interface_ids = [
     azurerm_network_interface.example.id,
   ]
- 
+
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -75,7 +75,6 @@ resource "azurerm_linux_virtual_machine" "example" {
     sku       = "22_04-lts"
     version   = "latest"
   }
+
 }
-output "azurerm" {
-  value = azurerm_public_ip.example
-}
+
