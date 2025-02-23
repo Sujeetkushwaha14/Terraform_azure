@@ -3,42 +3,44 @@ name: 'Terraform Apply'
 on:
   push:
     branches:
-      - main  # Workflow will trigger on push to the main branch
+      - main  # Trigger the workflow when changes are pushed to the 'main' branch
   pull_request:
     branches:
-      - main  # Workflow will trigger on PR to the main branch
-      - name: 'Login to Azure'
-uses: azure/login@v1
-        with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - main  # Trigger the workflow when PRs are created for the 'main' branch
 
 jobs:
   terraform:
-    runs-on: ubuntu-latest  # Runner on Ubuntu
+    runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout code
-    - name: Checkout code
-      uses: actions/checkout@v2
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    # Step 2: Set up Terraform
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_version: '1.4.0'  # Specify your Terraform version
+      # Step 2: Set up Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: '1.4.0'  # Adjust if you need a different version
 
-    # Step 3: Initialize Terraform
-    - name: Terraform Init
-      run: terraform init
+      # Step 3: Log in to Azure using Azure Service Principal credentials
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    # Step 4: Terraform Plan
-    - name: Terraform Plan
-      run: terraform plan
+      # Step 4: Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
 
-    # Step 5: Terraform Apply (This is done only if it's a push to the main branch)
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
-      if: github.ref == 'refs/heads/main'  # Only apply on push to main
+      # Step 5: Terraform Plan
+      - name: Terraform Plan
+        run: terraform plan
+
+      # Step 6: Terraform Apply (Only on push to main branch)
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        if: github.ref == 'refs/heads/main'  # Only apply on push to main
