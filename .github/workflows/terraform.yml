@@ -1,47 +1,37 @@
-name: Terraform CI/CD
+name: 'Terraform Apply'
 
 on:
   push:
     branches:
-      - main  # Aap jo bhi branch use karte ho
+      - main  # Workflow will trigger on push to the main branch
   pull_request:
     branches:
-      - main
+      - main  # Workflow will trigger on PR to the main branch
 
 jobs:
   terraform:
-    runs-on: ubuntu-latest  # Ye ek Ubuntu runner pe run karega
-
-    permissions:
-      id-token: write  # Add this line to enable id-token permissions
-      contents: read   # Required for checkout action
+    runs-on: ubuntu-latest  # Runner on Ubuntu
 
     steps:
-      # Checkout code from GitHub repository
-      - name: Checkout code
-        uses: actions/checkout@v2
+    # Step 1: Checkout code
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      # Set up Terraform using HashiCorp setup-terraform action
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
+    # Step 2: Set up Terraform
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: '1.4.0'  # Specify your Terraform version
 
-      # Azure Login using the Azure login action
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}  # Secrets se client-id fetch
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}  # Secrets se client-secret fetch
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}  # Secrets se tenant-id fetch
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Secrets se subscription-id fetch
+    # Step 3: Initialize Terraform
+    - name: Terraform Init
+      run: terraform init
 
-      # Initialize Terraform
-      - name: Terraform Init
-        run: terraform init
+    # Step 4: Terraform Plan
+    - name: Terraform Plan
+      run: terraform plan
 
-      # Run Terraform Plan to see the execution plan
-      - name: Terraform Plan
-        run: terraform plan
-
-      # Apply the Terraform changes
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+    # Step 5: Terraform Apply (This is done only if it's a push to the main branch)
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+      if: github.ref == 'refs/heads/main'  # Only apply on push to main
