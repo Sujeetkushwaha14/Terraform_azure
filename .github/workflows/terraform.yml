@@ -11,6 +11,10 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    
+    permissions:
+      id-token: write   # Allow write permissions to the id-token
+      contents: read    # Read permissions for the repository content
 
     steps:
       # Step 1: Checkout code
